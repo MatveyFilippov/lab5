@@ -55,9 +55,29 @@ class Fraction {
     public String toString() {
         return a;
     }
+
 }
 
 class Manipulations {
+
+    static Fraction make_frac (double a){
+        int b = (int) a;
+        int zero = 0;
+        while (b/a != 1){
+            a = a * 10;
+            b = (int) a;
+            zero++;
+            if (zero > 6){
+                break;
+            }
+        }
+        String one = "1";
+        for (int i = 0; i < zero; i++){
+            one = one + "0";
+        }
+        String time = b + "/" + one;
+        return new Fraction(time);
+    }
 
     public static double plus(Fraction first, Fraction second) {
         double a = first.make_double();
@@ -96,8 +116,7 @@ class Manipulations {
         Fraction second = new Fraction(String.valueOf(time));
 
         time = new StringBuilder(input);
-        time.charAt(something);
-        String what_do = String.valueOf(time);
+        String what_do = String.valueOf(time.charAt(something));
 
         double result = 0;
         if (what_do.equals("+")){
@@ -115,4 +134,5 @@ class Manipulations {
 
         return result;
     }
+
 }

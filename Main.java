@@ -61,5 +61,8 @@ public class Main {
 
         String i = Checks.pattern("Введите выражение (например -1/2 + 14/11): ", "^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*" + "\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*$");
         System.out.println("Ответ: " + Manipulations.all_manipulations(i));
+
+        Fraction s = Manipulations.make_frac(Manipulations.all_manipulations(i));
+        System.out.println("Ответ ввиде дроби: " + s);
     }
 }
