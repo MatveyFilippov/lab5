@@ -103,7 +103,55 @@ class Manipulations {
         return a/b;
     }
 
-    public static double all_manipulations (String input){
+    public static double razdelitel (String input){
+        double answer;
+        String regex = "^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*" + "\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*";
+        Pattern firs_frac = Pattern.compile(regex);
+        Matcher get_first_frac = firs_frac.matcher(input);
+        if (get_first_frac.find()){
+            int end = get_first_frac.end();
+            int length = input.length();
+
+            StringBuilder time = new StringBuilder(input);
+            StringBuilder another = new StringBuilder();
+            if ((length - end) > 0){
+                another = time.delete(0, end);
+                time = new StringBuilder(input);
+                time.delete(end, length);
+            }
+
+            answer = all_manipulations(String.valueOf(time));
+            Fraction already_get = make_frac(answer);
+
+            while (another.length() != 0){
+                Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
+                Matcher get_next_frac = another_frac.matcher(String.valueOf(another));
+                if (get_next_frac.find()){
+                    end = get_next_frac.end();
+                    length = String.valueOf(another).length();
+                    time = another;
+                    if ((length - end) > 0){
+                        time.delete(end, length);
+                    }
+                    answer = all_manipulations(already_get + String.valueOf(time));
+                    already_get = make_frac(answer);
+                    another.delete(0, end);
+                }
+                else{
+                    System.out.println("Введено не верное выражение!");
+                    answer = 999999999;
+                    break;
+                }
+            }
+        }
+        else{
+            System.out.println("Введено не верное выражение!");
+            answer = 999999999;
+        }
+        return answer;
+    }
+
+    private static double all_manipulations (String input){
         int something = input.indexOf(" ") + 1;
         int length = input.length();
 
