@@ -1,34 +1,47 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Fraction {
+class Ex_not_frac extends Exception{
+    public Ex_not_frac() {
+        System.out.println("Была введена не дробь");
+    }
+}
+
+class Ex_here_nol extends Exception{
+    public Ex_here_nol(String print_err){
+        System.out.println(print_err);
+    }
+}
+
+class Fraction{
 
     private final String a;
 
-    public Fraction (String input) {
+    public Fraction (String input) throws Ex_not_frac, Ex_here_nol {
         Pattern no_extra_sign = Pattern.compile("^-?" + "[0-9]*" + "/" + "-?" + "[0-9]*$");
         Matcher ok = no_extra_sign.matcher(input);
-        if (!ok.find()) {
-            System.out.println("Это не дробь!");
-            input = "again";
-        }
-        Pattern slash_zero = Pattern.compile("/-?0");
-        Matcher zero = slash_zero.matcher(input);
-        if (zero.find()){
-            System.out.println("На ноль делить нельзя!");
-            input = "again";
-        }
-        if (!input.equals("again")){
-            int slash = input.indexOf("/");
-            int len = input.length() - 1;
-            if (slash == 0){
-                input = 1 + input;
+        if (ok.find()) {
+            Pattern slash_zero = Pattern.compile("/-?0");
+            Matcher zero = slash_zero.matcher(input);
+            if (!zero.find()){
+                int slash = input.indexOf("/");
+                int len = input.length() - 1;
+                if (slash == 0){
+                    input = 1 + input;
+                }
+                if (slash == len){
+                    input = input + 1;
+                }
+                this.a = input;
+
             }
-            if (slash == len){
-                input = input + 1;
+            else {
+                throw new Ex_here_nol("Делить на ноль нельзя");
             }
         }
-        this.a = input;
+        else {
+            throw new Ex_not_frac();
+        }
     }
 
     public double make_double() {
@@ -48,10 +61,6 @@ class Fraction {
         return (first/second);
     }
 
-    public static Fraction defolt_fraction (){
-        return new Fraction("1/1");
-    }
-
     public String toString() {
         return a;
     }
@@ -60,7 +69,7 @@ class Fraction {
 
 class Manipulations {
 
-    static Fraction make_frac (double a){
+    protected static Fraction make_frac (double a) throws Ex_here_nol, Ex_not_frac {
         int b = (int) a;
         int zero = 0;
         while (b/a != 1){
@@ -79,49 +88,49 @@ class Manipulations {
         return new Fraction(time);
     }
 
-    public static double plus(Fraction first, Fraction second) {
+    private static double plus(Fraction first, Fraction second) {
         double a = first.make_double();
         double b = second.make_double();
         return a+b;
     }
 
-    public static double minus (Fraction first, Fraction second) {
+    private static double minus (Fraction first, Fraction second) {
         double a = first.make_double();
         double b = second.make_double();
         return a-b;
     }
 
-    public static double product(Fraction first, Fraction second) {
+    private static double product(Fraction first, Fraction second) {
         double a = first.make_double();
         double b = second.make_double();
         return a*b;
     }
 
-    public static double quotient (Fraction first, Fraction second) {
+    private static double quotient (Fraction first, Fraction second) {
         double a = first.make_double();
         double b = second.make_double();
         return a/b;
     }
 
-    public static double razdelitel (String input){
+    public static double razdelitel (String input) throws Ex_here_nol, Ex_not_frac {
         double answer;
-        String regex = "^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*" + "\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*";
-        Pattern firs_frac = Pattern.compile(regex);
-        Matcher get_first_frac = firs_frac.matcher(input);
-        if (get_first_frac.find()){
-            int end = get_first_frac.end();
+        Pattern firs = Pattern.compile("^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
+        Matcher get_first = firs.matcher(input);
+
+        if (get_first.find()){
+            int end = get_first.end();
             int length = input.length();
+            StringBuilder another = new StringBuilder();
 
             StringBuilder time = new StringBuilder(input);
-            StringBuilder another = new StringBuilder();
             if ((length - end) > 0){
                 another = time.delete(0, end);
                 time = new StringBuilder(input);
                 time.delete(end, length);
             }
 
-            answer = all_manipulations(String.valueOf(time));
-            Fraction already_get = make_frac(answer);
+            Fraction already_get = new Fraction(String.valueOf(time));
+            answer = already_get.make_double();
 
             while (another.length() != 0){
                 Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
@@ -151,7 +160,7 @@ class Manipulations {
         return answer;
     }
 
-    private static double all_manipulations (String input){
+    private static double all_manipulations (String input) throws Ex_here_nol, Ex_not_frac {
         int something = input.indexOf(" ") + 1;
         int length = input.length();
 
