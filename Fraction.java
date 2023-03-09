@@ -2,14 +2,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class Ex_not_frac extends Exception{
-    public Ex_not_frac() {
-        System.out.println("Была введена не дробь");
+    public Ex_not_frac(String print_err) {
+        System.out.println(print_err);
     }
 }
 
 class Ex_here_nol extends Exception{
-    public Ex_here_nol(String print_err){
-        System.out.println(print_err);
+    public Ex_here_nol(){
+        System.out.println("Делить на ноль нельзя");
     }
 }
 
@@ -36,11 +36,11 @@ class Fraction{
 
             }
             else {
-                throw new Ex_here_nol("Делить на ноль нельзя");
+                throw new Ex_here_nol();
             }
         }
         else {
-            throw new Ex_not_frac();
+            throw new Ex_not_frac("Была введена не дробь");
         }
     }
 
@@ -112,6 +112,21 @@ class Manipulations {
         return a/b;
     }
 
+    public static double with_brackets (String input){
+        double answer = 0;
+        Pattern open = Pattern.compile("\\(");
+        Matcher open_brecket = open.matcher(input);
+        Pattern close = Pattern.compile("\\)");
+        Matcher close_brecket = close.matcher(input);
+
+        while (open_brecket.find() && close_brecket.find()){
+            System.out.println("Допиши этот раздел");
+            answer = 1;
+        }
+        
+        return answer;
+    }
+
     public static double razdelitel (String input) throws Ex_here_nol, Ex_not_frac {
         double answer;
         Pattern firs = Pattern.compile("^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
@@ -147,15 +162,12 @@ class Manipulations {
                     another.delete(0, end);
                 }
                 else{
-                    System.out.println("Введено не верное выражение!");
-                    answer = 999999999;
-                    break;
+                    throw new Ex_not_frac("");
                 }
             }
         }
         else{
-            System.out.println("Введено не верное выражение!");
-            answer = 999999999;
+            throw new Ex_not_frac("");
         }
         return answer;
     }
