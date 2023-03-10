@@ -160,20 +160,22 @@ class Manipulations {
             }
             Fraction fraction_in_bracket = make_frac(infinity_string(String.valueOf(time)));
             start = start + time_start;
+            if (i > 1){
+                end = end+1;
+            }
             already.replace(start-1, end, String.valueOf(fraction_in_bracket));
             System.out.println(already);
             close_bracket = close.matcher(already);
             open_bracket = open.matcher(already);
             time = new StringBuilder(already);
         }
-        System.out.println(already);
         answer = infinity_string(String.valueOf(already));
         return answer;
     }
 
     public static double infinity_string(String input) throws Ex_here_nol, Ex_not_frac {
         double answer;
-        Pattern firs = Pattern.compile("^-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
+        Pattern firs = Pattern.compile("^-?" + "[0-9]+" + "/" + "-?" + "[0-9]+");
         Matcher get_first = firs.matcher(input);
 
         if (get_first.find()){
@@ -192,7 +194,7 @@ class Manipulations {
             answer = already_get.make_double();
 
             while (another.length() != 0){
-                Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[1-9]+" + "[0-9]*");
+                Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[0-9]+");
                 Matcher get_next_frac = another_frac.matcher(String.valueOf(another));
                 if (get_next_frac.find()){
                     end = get_next_frac.end();

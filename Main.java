@@ -3,7 +3,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    public static void main(String[] args) throws Ex_here_nol, Ex_not_frac {
+    public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.print("Нажмите ENTER чтоб начать");
         String ENTER = in.nextLine();
@@ -32,6 +32,8 @@ public class Main {
                 else{
                     System.out.println("Проверьте выражение на наличие лишних знаков или нехватки пробелов");
                 }
+            } catch(Ex_here_nol ex){
+                System.out.println("Проверьте выражение и введите заново без деления на 0");
             }
         }while (!input.equals("stop"));
     }
