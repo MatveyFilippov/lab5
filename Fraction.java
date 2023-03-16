@@ -117,10 +117,11 @@ class Manipulations {
 
         Pattern open = Pattern.compile("\\(");
         Pattern close = Pattern.compile("\\)");
-        Matcher open_bracket = open.matcher(input);
-        Matcher close_bracket = close.matcher(input);
 
         StringBuilder time = new StringBuilder(input);
+
+        Matcher open_bracket = open.matcher(time);
+        Matcher close_bracket = close.matcher(time);
 
         while (open_bracket.find() || close_bracket.find()){
             open_bracket = open.matcher(time);
@@ -164,7 +165,6 @@ class Manipulations {
                 end = end+1;
             }
             already.replace(start-1, end, String.valueOf(fraction_in_bracket));
-            System.out.println(already);
             close_bracket = close.matcher(already);
             open_bracket = open.matcher(already);
             time = new StringBuilder(already);
