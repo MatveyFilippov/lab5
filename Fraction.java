@@ -1,22 +1,42 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * <b>Собственная ошибка (основная)</b>, сделанная для удобсва, выбрасывает сообщение которое мы будем задавать позже
+ * @author MatveyFilippov
+ * @version 1.0
+ */
 class Ex_not_frac extends Exception{
     public Ex_not_frac(String print_err) {
         System.err.println(print_err);
     }
 }
 
+/**
+ * <b>Собственная ошибка (дополнительная)</b>, выбрасывается только в случае деления на ноль
+ * @author MatveyFilippov
+ * @version 1.0
+ */
 class Ex_here_nol extends Exception{
     public Ex_here_nol(){
         System.err.println("Делить на ноль нельзя");
     }
 }
 
+
+/**
+ * <b>Класс  дробей</b>, включающий возможности упрощения дроби и превращения её в число
+ * @author MatveyFilippov
+ * @version 1.0
+ * @see #Fraction(String) Создание дроби
+ * @see #make_double() Превращение строковой дроби в число
+ * @see #cut() Сокращение дроби
+ */
 class Fraction{
 
     private final String a;
 
+    /**Проверка на дробь и её возможное дополнение до дефолтного занчения 1, если нет числа после или до слеша*/
     public Fraction (String input) throws Ex_not_frac, Ex_here_nol {
         Pattern no_extra_sign = Pattern.compile("^-?" + "[0-9]*" + "/" + "-?" + "[0-9]*$");
         Matcher ok = no_extra_sign.matcher(input);
@@ -44,8 +64,9 @@ class Fraction{
         }
     }
 
+    /**Превращение строковой дроби в число*/
     public double make_double() {
-        String f = String.valueOf(a);
+        String f = a;
 
         int slash = f.indexOf("/");
         int length = f.length();
@@ -61,14 +82,56 @@ class Fraction{
         return (first/second);
     }
 
+    /**Сокращение дроби по принципу поиска общего делителя (от 999 до 2)*/
+    public Fraction cut() throws Ex_here_nol, Ex_not_frac {
+        String f = a;
+
+        int slash = f.indexOf("/");
+        int length = f.length();
+
+        StringBuilder time = new StringBuilder(f);
+        time.delete(slash, length);
+        double first = Double.parseDouble(String.valueOf(time));
+
+        time = new StringBuilder(f);
+        time.delete(0, slash+1);
+        double second = Double.parseDouble(String.valueOf(time));
+
+        int num;
+        for (num = 999; num > 1; num--){
+            if (first % num == 0 && second % num == 0){
+                first = first/num;
+                second = second/num;
+                break;
+            }
+        }
+
+        f = (int) first + "/" + (int) second;
+
+        return new Fraction(f);
+    }
+
     public String toString() {
         return a;
     }
 
 }
 
+/**
+ * <b>Класс  манипуляций с дробями</b>
+ * @author MatveyFilippov
+ * @version 1.0
+ * @see #make_frac(double) Превращение числа в строковую дробь
+ * @see #with_brackets(String) Счёт выражения со скобками
+ * @see #infinity_string(String) Счёт выражения без скобок
+ * @see #all_manipulations(String) Счёт выражения из двух дробей
+ */
 class Manipulations {
 
+    /**
+     * Превращение числа в строковую дробь по принципу умножения на 10, пока не останется чисел после запятой.
+     * После превращения применяется метод сокращения дроби, описанный в классе дробей
+     */
     protected static Fraction make_frac (double a) throws Ex_here_nol, Ex_not_frac {
         int b = (int) a;
         int zero = 0;
@@ -85,7 +148,7 @@ class Manipulations {
             one = one + "0";
         }
         String time = b + "/" + one;
-        return new Fraction(time);
+        return new Fraction(time).cut();
     }
 
     private static double plus(Fraction first, Fraction second) {
@@ -112,6 +175,9 @@ class Manipulations {
         return a/b;
     }
 
+    /**
+     * После превращения применяется метод сокращения дроби, описанный в классе дробей
+     */
     public static double with_brackets (String input) throws Ex_here_nol, Ex_not_frac {
         double answer;
 
@@ -175,7 +241,7 @@ class Manipulations {
 
     public static double infinity_string(String input) throws Ex_here_nol, Ex_not_frac {
         double answer;
-        Pattern firs = Pattern.compile("^-?" + "[0-9]+" + "/" + "-?" + "[0-9]+");
+        Pattern firs = Pattern.compile("^-?" + "[0-9]*" + "/" + "-?" + "[0-9]*");
         Matcher get_first = firs.matcher(input);
 
         if (get_first.find()){
@@ -194,7 +260,7 @@ class Manipulations {
             answer = already_get.make_double();
 
             while (another.length() != 0){
-                Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]+" + "/" + "-?" + "[0-9]+");
+                Pattern another_frac = Pattern.compile("^\s" + "[-*/+]" + "\s" + "-?" + "[0-9]*" + "/" + "-?" + "[0-9]*");
                 Matcher get_next_frac = another_frac.matcher(String.valueOf(another));
                 if (get_next_frac.find()){
                     end = get_next_frac.end();
