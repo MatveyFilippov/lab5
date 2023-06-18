@@ -3,15 +3,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.println("Калькулятор дробей");
-        System.out.print("Нажмите ENTER чтоб начать");
+        System.out.print("Калькулятор дробей\nНажмите ENTER чтоб начать");
         String input = in.nextLine();
-        System.out.println("Можно считать выражения по типу: \"-1/3 * (33/7 + 14/5) - 4/5\"");
-        System.out.println();
+        System.out.println("Можно считать выражения по типу: \"-1/3 * (33/7 + 14/5) - 4/5\"\n");
 
         while (true) {
-            System.out.println();
-            System.out.print("Введите выражение или stop, если хотите закончить: ");
+            System.out.print("\nВведите выражение или stop, если хотите закончить: ");
             input = in.nextLine();
 
             if(input.equals("stop")){
@@ -35,5 +32,7 @@ public class Main {
                 System.out.println("Проверьте выражение на наличие лишних знаков или нехватки пробелов");
             }
         }
+
+        in.close();
     }
 }
