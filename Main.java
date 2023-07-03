@@ -18,12 +18,10 @@ public class Main {
 
             try {
                 double answer;
-                if(input.contains("(") || input.contains(")")){
+                if (input.contains("(") || input.contains(")"))
                     answer = Manipulations.with_brackets(input);
-                }
-                else{
+                else
                     answer = Manipulations.infinity_string(input);
-                }
                 Fraction fraction = Manipulations.make_fraction(answer);
                 System.out.println("Ответ: " + fraction + " = " + answer);
             } catch(Ex_here_nol ex){
